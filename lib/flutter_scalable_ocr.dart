@@ -115,7 +115,7 @@ class ScalableOCRState extends State<ScalableOCR> {
     if (cameraController == null || !cameraController.value.isInitialized) {
       return const Text('Tap a camera');
     } else {
-      const double previewAspectRatio = 0.5;
+      const double previewAspectRatio = 1;
       return SizedBox(
         height: widget.boxHeight ?? MediaQuery.of(context).size.height,
         child: Stack(
@@ -142,8 +142,8 @@ class ScalableOCRState extends State<ScalableOCR> {
                           child: CameraPreview(cameraController, child:
                               LayoutBuilder(builder: (BuildContext context,
                                   BoxConstraints constraints) {
-                            maxWidth = constraints.maxWidth;
-                            maxHeight = constraints.maxHeight;
+                            maxWidth = MediaQuery.of(context).size.width;
+                            maxHeight = MediaQuery.of(context).size.height;
 
                             return GestureDetector(
                               behavior: HitTestBehavior.opaque,
