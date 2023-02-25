@@ -126,10 +126,10 @@ class TextRecognizerPainter extends CustomPainter {
                   fontSize: 14,
                   textDirection: TextDirection.ltr),
             );
-            builder.pushStyle(
-                ui.TextStyle(color: Colors.white, background: background));
-            builder.addText(parsedText);
-            builder.pop();
+            //builder.pushStyle(
+            //    ui.TextStyle(color: Colors.white, background: background));
+            //builder.addText(parsedText);
+            //builder.pop();
 
             canvas.drawParagraph(
               builder.build()
