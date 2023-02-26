@@ -10,9 +10,9 @@ class TextRecognizerPainter extends CustomPainter {
   TextRecognizerPainter(this.recognizedText, this.absoluteImageSize,
       this.rotation, this.renderBox, this.getScannedText,
       {this.boxLeftOff = 4,
-      this.boxBottomOff = 2,
+      this.boxBottomOff = 1.7,
       this.boxRightOff = 4,
-      this.boxTopOff = 2,
+      this.boxTopOff = 1.7,
       this.getRawData,
       this.paintboxCustom});
 
