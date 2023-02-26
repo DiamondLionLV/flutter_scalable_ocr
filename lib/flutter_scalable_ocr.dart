@@ -128,8 +128,8 @@ class ScalableOCRState extends State<ScalableOCR> {
                 height:
                     MediaQuery.of(context).size.height,
                 key: cameraPrev,
-                //child: AspectRatio(
-                //  aspectRatio: 1,
+                child: AspectRatio(
+                  aspectRatio: 2,
                   child: GestureDetector(
                     behavior: HitTestBehavior.translucent,
                     child: ClipRRect(
@@ -156,7 +156,7 @@ class ScalableOCRState extends State<ScalableOCR> {
                       ),
                     ),
                   ),
-                //),
+                ),
               ),
             ),
             if (customPaint != null)
