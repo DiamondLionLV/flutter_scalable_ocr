@@ -85,9 +85,9 @@ class ScalableOCRState extends State<ScalableOCR> {
 
   @override
   Widget build(BuildContext context) {
-    double sizeH = MediaQuery.of(context).size.height / 100;
+    double sizeH = MediaQuery.of(context).size.height;
     return Padding(
-        padding: EdgeInsets.all(sizeH * 3),
+        padding: EdgeInsets.all(0),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -96,14 +96,13 @@ class ScalableOCRState extends State<ScalableOCR> {
                       _controller?.value.isInitialized == false
                   ? Container(
                       width: MediaQuery.of(context).size.width,
-                      height: sizeH * 19,
+                      height: sizeH,
                       decoration: BoxDecoration(
                         color: Colors.grey,
                         borderRadius: BorderRadius.circular(17),
                       ),
                     )
                   : _liveFeedBody(),
-              SizedBox(height: sizeH * 2),
             ],
           ),
         ));
@@ -136,8 +135,7 @@ class ScalableOCRState extends State<ScalableOCR> {
                       borderRadius:
                           const BorderRadius.all(Radius.circular(16.0)),
                       child: Transform.scale(
-                        scale: cameraController.value.aspectRatio /
-                            previewAspectRatio,
+                        scale: 1
                         child: Center(
                           child: CameraPreview(cameraController, child:
                               LayoutBuilder(builder: (BuildContext context,
