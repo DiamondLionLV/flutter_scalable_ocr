@@ -128,7 +128,7 @@ class ScalableOCRState extends State<ScalableOCR> {
                     widget.boxHeight ?? MediaQuery.of(context).size.height,
                 key: cameraPrev,
                 child: AspectRatio(
-                  aspectRatio: 1 / previewAspectRatio,
+                  aspectRatio: 1,
                   child: GestureDetector(
                     behavior: HitTestBehavior.translucent,
                     child: ClipRRect(
