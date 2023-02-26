@@ -135,7 +135,7 @@ class ScalableOCRState extends State<ScalableOCR> {
                       borderRadius:
                           const BorderRadius.all(Radius.circular(16.0)),
                       child: Transform.scale(
-                        scale: 1
+                        scale: 1,
                         child: Center(
                           child: CameraPreview(cameraController, child:
                               LayoutBuilder(builder: (BuildContext context,
