@@ -11,10 +11,10 @@ import 'package:camera/camera.dart';
 class ScalableOCR extends StatefulWidget {
   const ScalableOCR(
       {Key? key,
-      this.boxLeftOff = 5,
-      this.boxRightOff = 5,
-      this.boxBottomOff = 1.8,
-      this.boxTopOff = 1.8,
+      this.boxLeftOff = 4,
+      this.boxRightOff = 4,
+      this.boxBottomOff = 2.7,
+      this.boxTopOff = 2.7,
       this.boxHeight,
       required this.getScannedText,
       this.getRawData,
@@ -85,9 +85,9 @@ class ScalableOCRState extends State<ScalableOCR> {
 
   @override
   Widget build(BuildContext context) {
-    double sizeH = MediaQuery.of(context).size.height;
+    double sizeH = MediaQuery.of(context).size.height / 100;
     return Padding(
-        padding: EdgeInsets.all(0),
+        padding: EdgeInsets.all(sizeH * 3),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -96,17 +96,17 @@ class ScalableOCRState extends State<ScalableOCR> {
                       _controller?.value.isInitialized == false
                   ? Container(
                       width: MediaQuery.of(context).size.width,
-                      height: sizeH,
+                      height: sizeH * 19,
                       decoration: BoxDecoration(
                         color: Colors.grey,
                         borderRadius: BorderRadius.circular(17),
                       ),
                     )
                   : _liveFeedBody(),
+              SizedBox(height: sizeH * 2),
             ],
           ),
-        )
-     );
+        ));
   }
 
   // Body of live camera stream
@@ -115,7 +115,7 @@ class ScalableOCRState extends State<ScalableOCR> {
     if (cameraController == null || !cameraController.value.isInitialized) {
       return const Text('Tap a camera');
     } else {
-      const double previewAspectRatio = 1;
+      const double previewAspectRatio = 0.5;
       return SizedBox(
         height: widget.boxHeight ?? MediaQuery.of(context).size.height / 5,
         child: Stack(
@@ -129,7 +129,7 @@ class ScalableOCRState extends State<ScalableOCR> {
                     widget.boxHeight ?? MediaQuery.of(context).size.height / 5,
                 key: cameraPrev,
                 child: AspectRatio(
-                  aspectRatio: 2,
+                  aspectRatio: 1 / previewAspectRatio,
                   child: GestureDetector(
                     behavior: HitTestBehavior.translucent,
                     child: ClipRRect(
