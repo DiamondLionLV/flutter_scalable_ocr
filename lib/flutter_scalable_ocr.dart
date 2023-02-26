@@ -129,15 +129,14 @@ class ScalableOCRState extends State<ScalableOCR> {
                     MediaQuery.of(context).size.height,
                 key: cameraPrev,
                 child: AspectRatio(
-                  aspectRatio: 1 / previewAspectRatio,
+                  aspectRatio: 1,
                   child: GestureDetector(
                     behavior: HitTestBehavior.translucent,
                     child: ClipRRect(
                       borderRadius:
                           const BorderRadius.all(Radius.circular(16.0)),
                       child: Transform.scale(
-                        scale: cameraController.value.aspectRatio /
-                            previewAspectRatio,
+                        scale: 0,
                         child: Center(
                           child: CameraPreview(cameraController, child:
                               LayoutBuilder(builder: (BuildContext context,
