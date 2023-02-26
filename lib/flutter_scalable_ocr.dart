@@ -117,7 +117,7 @@ class ScalableOCRState extends State<ScalableOCR> {
     } else {
       const double previewAspectRatio = 1;
       return SizedBox(
-        height: MediaQuery.of(context).size.height,
+        height: widget.boxHeight ?? MediaQuery.of(context).size.height,
         child: Stack(
           alignment: Alignment.topCenter,
           clipBehavior: Clip.none,
@@ -126,7 +126,7 @@ class ScalableOCRState extends State<ScalableOCR> {
             Center(
               child: SizedBox(
                 height:
-                    MediaQuery.of(context).size.height,
+                    widget.boxHeight ?? MediaQuery.of(context).size.height,
                 key: cameraPrev,
                 child: AspectRatio(
                   aspectRatio: 2,
