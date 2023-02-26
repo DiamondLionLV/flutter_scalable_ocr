@@ -86,8 +86,8 @@ class ScalableOCRState extends State<ScalableOCR> {
   @override
   Widget build(BuildContext context) {
     double sizeH = MediaQuery.of(context).size.height;
-//     return Padding(
-//         padding: EdgeInsets.all(sizeH),
+    return Padding(
+        padding: EdgeInsets.all(sizeH),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -106,8 +106,8 @@ class ScalableOCRState extends State<ScalableOCR> {
               SizedBox(height: sizeH),
             ],
           ),
-        );
-     //);
+        )
+     );
   }
 
   // Body of live camera stream
