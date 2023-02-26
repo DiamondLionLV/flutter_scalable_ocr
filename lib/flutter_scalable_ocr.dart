@@ -87,7 +87,7 @@ class ScalableOCRState extends State<ScalableOCR> {
   Widget build(BuildContext context) {
     double sizeH = MediaQuery.of(context).size.height;
     return Padding(
-        padding: EdgeInsets.all(sizeH),
+        padding: EdgeInsets.all(1),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -103,7 +103,7 @@ class ScalableOCRState extends State<ScalableOCR> {
                       ),
                     )
                   : _liveFeedBody(),
-              SizedBox(height: sizeH),
+              SizedBox(height: 1),
             ],
           ),
         )
