@@ -87,7 +87,7 @@ class ScalableOCRState extends State<ScalableOCR> {
   Widget build(BuildContext context) {
     double sizeH = MediaQuery.of(context).size.height;
     return Padding(
-        padding: EdgeInsets.all(1),
+        padding: EdgeInsets.all(0),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -103,7 +103,6 @@ class ScalableOCRState extends State<ScalableOCR> {
                       ),
                     )
                   : _liveFeedBody(),
-              SizedBox(height: 1),
             ],
           ),
         )
@@ -118,7 +117,7 @@ class ScalableOCRState extends State<ScalableOCR> {
     } else {
       const double previewAspectRatio = 1;
       return SizedBox(
-        height: widget.boxHeight ?? MediaQuery.of(context).size.height,
+        height: MediaQuery.of(context).size.height,
         child: Stack(
           alignment: Alignment.topCenter,
           clipBehavior: Clip.none,
@@ -127,7 +126,7 @@ class ScalableOCRState extends State<ScalableOCR> {
             Center(
               child: SizedBox(
                 height:
-                    widget.boxHeight ?? MediaQuery.of(context).size.height,
+                    MediaQuery.of(context).size.height,
                 key: cameraPrev,
                 child: AspectRatio(
                   aspectRatio: 1 / previewAspectRatio,
