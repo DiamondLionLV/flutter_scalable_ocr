@@ -120,24 +120,24 @@ class TextRecognizerPainter extends CustomPainter {
             var parsedText = textBlock.text;
             scannedText += " ${textBlock.text}";
 
-            final ParagraphBuilder builder = ParagraphBuilder(
-              ParagraphStyle(
-                  textAlign: TextAlign.left,
-                  fontSize: 14,
-                  textDirection: TextDirection.ltr),
-            );
+            //final ParagraphBuilder builder = ParagraphBuilder(
+            //  ParagraphStyle(
+            //      textAlign: TextAlign.left,
+            //      fontSize: 14,
+            //      textDirection: TextDirection.ltr),
+            //);
             //builder.pushStyle(
             //    ui.TextStyle(color: Colors.white, background: background));
             //builder.addText(parsedText);
             //builder.pop();
 
-            canvas.drawParagraph(
-              builder.build()
-                ..layout(ParagraphConstraints(
-                  width: right - left,
-                )),
-              Offset(left, top),
-            );
+            //canvas.drawParagraph(
+            //  builder.build()
+            //    ..layout(ParagraphConstraints(
+            //      width: right - left,
+            //    )),
+            //  Offset(left, top),
+            //);
           }
         }
       }
