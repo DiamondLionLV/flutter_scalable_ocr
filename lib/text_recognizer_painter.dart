@@ -9,10 +9,10 @@ import 'coordinates_translator.dart';
 class TextRecognizerPainter extends CustomPainter {
   TextRecognizerPainter(this.recognizedText, this.absoluteImageSize,
       this.rotation, this.renderBox, this.getScannedText,
-      {this.boxLeftOff = 5,
-      this.boxBottomOff = 1.8,
-      this.boxRightOff = 5,
-      this.boxTopOff = 1.8,
+      {this.boxLeftOff = 4,
+      this.boxBottomOff = 2,
+      this.boxRightOff = 4,
+      this.boxTopOff = 2,
       this.getRawData,
       this.paintboxCustom});
 
@@ -57,7 +57,7 @@ class TextRecognizerPainter extends CustomPainter {
     scannedText = "";
 
     final Paint background = Paint()
-      ..color = const Color(0xffaa1578);
+      ..color = const Color.fromARGB(153, 98, 152, 227);
 
     final Size boxSize = renderBox.size;
 
@@ -95,8 +95,8 @@ class TextRecognizerPainter extends CustomPainter {
 
     final Paint paintbox = paintboxCustom ?? Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 3.0
-      ..color = const Color(0xffaa1578);
+      ..strokeWidth = 2.0
+      ..color = const Color.fromARGB(153, 102, 160, 241);
     canvas.drawRect(
       Rect.fromLTRB(boxLeft, boxTop, boxRight, boxBottom),
       paintbox,
