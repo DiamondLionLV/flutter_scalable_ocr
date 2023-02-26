@@ -11,10 +11,10 @@ import 'package:camera/camera.dart';
 class ScalableOCR extends StatefulWidget {
   const ScalableOCR(
       {Key? key,
-      this.boxLeftOff = 4,
-      this.boxRightOff = 4,
-      this.boxBottomOff = 2.7,
-      this.boxTopOff = 2.7,
+      this.boxLeftOff = 5,
+      this.boxRightOff = 5,
+      this.boxBottomOff = 1,
+      this.boxTopOff = 1,
       this.boxHeight,
       required this.getScannedText,
       this.getRawData,
@@ -128,8 +128,8 @@ class ScalableOCRState extends State<ScalableOCR> {
                 height:
                     MediaQuery.of(context).size.height,
                 key: cameraPrev,
-                child: AspectRatio(
-                  aspectRatio: 1,
+                //child: AspectRatio(
+                //  aspectRatio: 1,
                   child: GestureDetector(
                     behavior: HitTestBehavior.translucent,
                     child: ClipRRect(
@@ -156,7 +156,7 @@ class ScalableOCRState extends State<ScalableOCR> {
                       ),
                     ),
                   ),
-                ),
+                //),
               ),
             ),
             if (customPaint != null)
