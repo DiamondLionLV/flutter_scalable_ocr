@@ -141,8 +141,8 @@ class ScalableOCRState extends State<ScalableOCR> {
                           child: CameraPreview(cameraController, child:
                               LayoutBuilder(builder: (BuildContext context,
                                   BoxConstraints constraints) {
-                            maxWidth = MediaQuery.of(context).size.width;
-                            maxHeight = MediaQuery.of(context).size.height;
+                            maxWidth = constraints.maxWidth;
+                            maxHeight = constraints.maxHeight;
 
                             return GestureDetector(
                               behavior: HitTestBehavior.opaque,
