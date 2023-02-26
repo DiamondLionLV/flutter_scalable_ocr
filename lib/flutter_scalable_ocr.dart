@@ -106,7 +106,7 @@ class ScalableOCRState extends State<ScalableOCR> {
               SizedBox(height: sizeH),
             ],
           ),
-        )
+        );
      //);
   }
 
