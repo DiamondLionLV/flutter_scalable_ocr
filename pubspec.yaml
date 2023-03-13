@@ -13,6 +13,7 @@ dependencies:
     sdk: flutter
   google_mlkit_commons: ^0.2.0
   google_mlkit_text_recognition: ^0.5.0
+  tesseract_ocr: ^0.3.1
 
 dev_dependencies:
   flutter_test:
