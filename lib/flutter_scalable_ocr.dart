@@ -300,47 +300,52 @@ class ScalableOCRState extends State<ScalableOCR> {
   }
 
   // Process image
-  Future<void> processImage(InputImage inputImage) async {
-    if (!_canProcess) return;
-    if (_isBusy) return;
-    _isBusy = true;
+Future<void> processImage(InputImage inputImage) async {
+  if (!_canProcess) return;
+  if (_isBusy) return;
+  _isBusy = true;
 
-    final recognizedText = await _textRecognizer.processImage(inputImage);
-    if (inputImage.inputImageData?.size != null &&
-        inputImage.inputImageData?.imageRotation != null &&
-        cameraPrev.currentContext != null) {
-      final RenderBox renderBox =
-          cameraPrev.currentContext?.findRenderObject() as RenderBox;
+  final visionText = await TesseractOcr.extractText(inputImage);
 
-      var painter = TextRecognizerPainter(
-          recognizedText,
-          inputImage.inputImageData!.size,
-          inputImage.inputImageData!.imageRotation,
-          renderBox, (value) {
+  if (inputImage.inputImageData?.size != null &&
+      inputImage.inputImageData?.imageRotation != null &&
+      cameraPrev.currentContext != null) {
+    final RenderBox renderBox =
+        cameraPrev.currentContext?.findRenderObject() as RenderBox;
+
+    var painter = TextRecognizerPainter(
+      visionText.text,
+      inputImage.inputImageData!.size,
+      inputImage.inputImageData!.imageRotation,
+      renderBox,
+      (value) {
         widget.getScannedText(value);
-      }, getRawData: (value) {
+      },
+      getRawData: (value) {
         if (widget.getRawData != null) {
           widget.getRawData!(value);
         }
       },
-          boxBottomOff: widget.boxBottomOff,
-          boxTopOff: widget.boxTopOff,
-          boxRightOff: widget.boxRightOff,
-          boxLeftOff: widget.boxRightOff,
-          paintboxCustom: widget.paintboxCustom);
+      boxBottomOff: widget.boxBottomOff,
+      boxTopOff: widget.boxTopOff,
+      boxRightOff: widget.boxRightOff,
+      boxLeftOff: widget.boxRightOff,
+      paintboxCustom: widget.paintboxCustom,
+    );
 
-      customPaint = CustomPaint(painter: painter);
-    } else {
-      customPaint = null;
-    }
-    Future.delayed(const Duration(milliseconds: 900)).then((value) {
-      if (!converting) {
-        _isBusy = false;
-      }
-
-      if (mounted) {
-        setState(() {});
-      }
-    });
+    customPaint = CustomPaint(painter: painter);
+  } else {
+    customPaint = null;
   }
+
+  Future.delayed(const Duration(milliseconds: 900)).then((value) {
+    if (!converting) {
+      _isBusy = false;
+    }
+
+    if (mounted) {
+      setState(() {});
+    }
+  });
+}
 }
