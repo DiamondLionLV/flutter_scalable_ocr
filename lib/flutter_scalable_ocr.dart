@@ -330,7 +330,6 @@ class ScalableOCRState extends State<ScalableOCR> {
           paintboxCustom: widget.paintboxCustom);
 
       customPaint = CustomPaint(painter: painter);
-      inputImage.dispose();
     } else {
       customPaint = null;
     }
