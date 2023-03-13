@@ -6,7 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import './text_recognizer_painter.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
-import 'package:tesseract_ocr/tesseract_ocr.dart';
 import 'package:camera/camera.dart';
 
 class ScalableOCR extends StatefulWidget {
@@ -300,53 +299,48 @@ class ScalableOCRState extends State<ScalableOCR> {
     _controller = null;
   }
 
-  // Process image
-Future<void> processImage(InputImage inputImage) async {
-  if (!_canProcess) return;
-  if (_isBusy) return;
-  _isBusy = true;
+ // Process image
+  Future<void> processImage(InputImage inputImage) async {
+    if (!_canProcess) return;
+    if (_isBusy) return;
+    _isBusy = true;
 
-  final visionText = await TesseractOcr.extractText(inputImage);
+    final recognizedText = await _textRecognizer.processImage(inputImage);
+    if (inputImage.inputImageData?.size != null &&
+        inputImage.inputImageData?.imageRotation != null &&
+        cameraPrev.currentContext != null) {
+      final RenderBox renderBox =
+          cameraPrev.currentContext?.findRenderObject() as RenderBox;
 
-  if (inputImage.inputImageData?.size != null &&
-      inputImage.inputImageData?.imageRotation != null &&
-      cameraPrev.currentContext != null) {
-    final RenderBox renderBox =
-        cameraPrev.currentContext?.findRenderObject() as RenderBox;
-
-    var painter = TextRecognizerPainter(
-      visionText.text,
-      inputImage.inputImageData!.size,
-      inputImage.inputImageData!.imageRotation,
-      renderBox,
-      (value) {
+      var painter = TextRecognizerPainter(
+          recognizedText,
+          inputImage.inputImageData!.size,
+          inputImage.inputImageData!.imageRotation,
+          renderBox, (value) {
         widget.getScannedText(value);
-      },
-      getRawData: (value) {
+      }, getRawData: (value) {
         if (widget.getRawData != null) {
           widget.getRawData!(value);
         }
       },
-      boxBottomOff: widget.boxBottomOff,
-      boxTopOff: widget.boxTopOff,
-      boxRightOff: widget.boxRightOff,
-      boxLeftOff: widget.boxRightOff,
-      paintboxCustom: widget.paintboxCustom,
-    );
+          boxBottomOff: widget.boxBottomOff,
+          boxTopOff: widget.boxTopOff,
+          boxRightOff: widget.boxRightOff,
+          boxLeftOff: widget.boxRightOff,
+          paintboxCustom: widget.paintboxCustom);
 
-    customPaint = CustomPaint(painter: painter);
-  } else {
-    customPaint = null;
+      customPaint = CustomPaint(painter: painter);
+    } else {
+      customPaint = null;
+    }
+    Future.delayed(const Duration(milliseconds: 900)).then((value) {
+      if (!converting) {
+        _isBusy = false;
+      }
+
+      if (mounted) {
+        setState(() {});
+      }
+    });
   }
-
-  Future.delayed(const Duration(milliseconds: 900)).then((value) {
-    if (!converting) {
-      _isBusy = false;
-    }
-
-    if (mounted) {
-      setState(() {});
-    }
-  });
-}
 }
