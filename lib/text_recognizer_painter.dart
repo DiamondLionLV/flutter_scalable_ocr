@@ -95,7 +95,7 @@ class TextRecognizerPainter extends CustomPainter {
 
     final Paint paintbox = paintboxCustom ?? Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 4.0
+      ..strokeWidth = 3.0
       ..color = const Color(0xffaa1578);
     canvas.drawRect(
       Rect.fromLTRB(boxLeft, boxTop, boxRight, boxBottom),
@@ -119,25 +119,6 @@ class TextRecognizerPainter extends CustomPainter {
 
             var parsedText = textBlock.text;
             scannedText += " ${textBlock.text}";
-
-//             final ParagraphBuilder builder = ParagraphBuilder(
-//               ParagraphStyle(
-//                   textAlign: TextAlign.left,
-//                   fontSize: 14,
-//                   textDirection: TextDirection.ltr),
-//             );
-//             builder.pushStyle(
-//                 ui.TextStyle(color: Colors.white, background: background));
-//             builder.addText(parsedText);
-//             builder.pop();
-
-//             canvas.drawParagraph(
-//               builder.build()
-//                 ..layout(ParagraphConstraints(
-//                   width: right - left,
-//                 )),
-//               Offset(left, top),
-//             );
           }
         }
       }
