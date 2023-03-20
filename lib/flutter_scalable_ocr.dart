@@ -202,6 +202,7 @@ class ScalableOCRState extends State<ScalableOCR> {
                 onPanStart: (DragStartDetails details) {
                   draggedEdge =
                       detectResizeEdge(details.localPosition, boxRect.value);
+                  print("draggedEdge: $draggedEdge");
                 },
                 onPanUpdate: (DragUpdateDetails details) {
                   double dx = details.delta.dx;
