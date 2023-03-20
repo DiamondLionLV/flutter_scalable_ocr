@@ -198,12 +198,12 @@ class ScalableOCRState extends State<ScalableOCR> {
                                   switch (draggedEdge) {
                                     case ResizeEdge.left:
                                       boxRect.value = boxRect.value
-                                          .translate(dx, 0)
+                                          .shift(Offset(dx, 0))
                                           .deflate(dx / 2);
                                       break;
                                     case ResizeEdge.top:
                                       boxRect.value = boxRect.value
-                                          .translate(0, dy)
+                                          .shift(Offset(0, dy))
                                           .deflate(dy / 2);
                                       break;
                                     case ResizeEdge.right:
