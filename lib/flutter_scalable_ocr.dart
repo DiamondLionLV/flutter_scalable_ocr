@@ -49,6 +49,8 @@ class ScalableOCR extends StatefulWidget {
   ScalableOCRState createState() => ScalableOCRState();
 }
 
+enum ResizeEdge { none, left, top, right, bottom }
+
 class ScalableOCRState extends State<ScalableOCR> {
   final boxRect = ValueNotifier<Rect>(Rect.zero);
   final TextRecognizer _textRecognizer = TextRecognizer();
@@ -71,6 +73,28 @@ class ScalableOCRState extends State<ScalableOCR> {
   double maxWidth = 0;
   double maxHeight = 0;
   String convertingAmount = "";
+
+  ResizeEdge detectResizeEdge(Offset localPosition, Rect box) {
+    const double edgeSize = 20.0;
+
+    if (localPosition.dx >= box.left - edgeSize &&
+        localPosition.dx <= box.left + edgeSize) {
+      return ResizeEdge.left;
+    } else if (localPosition.dy >= box.top - edgeSize &&
+        localPosition.dy <= box.top + edgeSize) {
+      return ResizeEdge.top;
+    } else if (localPosition.dx >= box.right - edgeSize &&
+        localPosition.dx <= box.right + edgeSize) {
+      return ResizeEdge.right;
+    } else if (localPosition.dy >= box.bottom - edgeSize &&
+        localPosition.dy <= box.bottom + edgeSize) {
+      return ResizeEdge.bottom;
+    }
+
+    return ResizeEdge.none;
+  }
+
+  ResizeEdge draggedEdge = ResizeEdge.none;
 
   @override
   void initState() {
@@ -152,18 +176,52 @@ class ScalableOCRState extends State<ScalableOCR> {
                         scale: 1,
                         child: Center(
                           child: GestureDetector(
-                            onPanUpdate: (details) {
+                            onPanStart: (DragStartDetails details) {
+                              draggedEdge = detectResizeEdge(
+                                  details.localPosition, boxRect.value);
+                            },
+                            onPanUpdate: (DragUpdateDetails details) {
                               double dx = details.delta.dx;
                               double dy = details.delta.dy;
 
-                              setState(() {
-                                boxRect.value = Rect.fromLTRB(
-                                  boxRect.value.left + dx,
-                                  boxRect.value.top + dy,
-                                  boxRect.value.right + dx,
-                                  boxRect.value.bottom + dy,
-                                );
-                              });
+                              if (draggedEdge == ResizeEdge.none) {
+                                setState(() {
+                                  boxRect.value = Rect.fromLTRB(
+                                    boxRect.value.left + dx,
+                                    boxRect.value.top + dy,
+                                    boxRect.value.right + dx,
+                                    boxRect.value.bottom + dy,
+                                  );
+                                });
+                              } else {
+                                setState(() {
+                                  switch (draggedEdge) {
+                                    case ResizeEdge.left:
+                                      boxRect.value = boxRect.value
+                                          .translate(dx, 0)
+                                          .deflate(dx / 2);
+                                      break;
+                                    case ResizeEdge.top:
+                                      boxRect.value = boxRect.value
+                                          .translate(0, dy)
+                                          .deflate(dy / 2);
+                                      break;
+                                    case ResizeEdge.right:
+                                      boxRect.value =
+                                          boxRect.value.inflate(dx / 2);
+                                      break;
+                                    case ResizeEdge.bottom:
+                                      boxRect.value =
+                                          boxRect.value.inflate(dy / 2);
+                                      break;
+                                    default:
+                                      break;
+                                  }
+                                });
+                              }
+                            },
+                            onPanEnd: (DragEndDetails details) {
+                              draggedEdge = ResizeEdge.none;
                             },
                             child: CameraPreview(cameraController, child:
                                 LayoutBuilder(builder: (BuildContext context,
