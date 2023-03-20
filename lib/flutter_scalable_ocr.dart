@@ -175,69 +175,20 @@ class ScalableOCRState extends State<ScalableOCR> {
                       child: Transform.scale(
                         scale: 1,
                         child: Center(
-                          child: GestureDetector(
-                            onPanStart: (DragStartDetails details) {
-                              draggedEdge = detectResizeEdge(
-                                  details.localPosition, boxRect.value);
-                            },
-                            onPanUpdate: (DragUpdateDetails details) {
-                              double dx = details.delta.dx;
-                              double dy = details.delta.dy;
+                          child: CameraPreview(cameraController, child:
+                              LayoutBuilder(builder: (BuildContext context,
+                                  BoxConstraints constraints) {
+                            maxWidth = constraints.maxWidth;
+                            maxHeight = constraints.maxHeight;
 
-                              if (draggedEdge == ResizeEdge.none) {
-                                setState(() {
-                                  boxRect.value = Rect.fromLTRB(
-                                    boxRect.value.left + dx,
-                                    boxRect.value.top + dy,
-                                    boxRect.value.right + dx,
-                                    boxRect.value.bottom + dy,
-                                  );
-                                });
-                              } else {
-                                setState(() {
-                                  switch (draggedEdge) {
-                                    case ResizeEdge.left:
-                                      boxRect.value = boxRect.value
-                                          .shift(Offset(dx, 0))
-                                          .deflate(dx / 2);
-                                      break;
-                                    case ResizeEdge.top:
-                                      boxRect.value = boxRect.value
-                                          .shift(Offset(0, dy))
-                                          .deflate(dy / 2);
-                                      break;
-                                    case ResizeEdge.right:
-                                      boxRect.value =
-                                          boxRect.value.inflate(dx / 2);
-                                      break;
-                                    case ResizeEdge.bottom:
-                                      boxRect.value =
-                                          boxRect.value.inflate(dy / 2);
-                                      break;
-                                    default:
-                                      break;
-                                  }
-                                });
-                              }
-                            },
-                            onPanEnd: (DragEndDetails details) {
-                              draggedEdge = ResizeEdge.none;
-                            },
-                            child: CameraPreview(cameraController, child:
-                                LayoutBuilder(builder: (BuildContext context,
-                                    BoxConstraints constraints) {
-                              maxWidth = constraints.maxWidth;
-                              maxHeight = constraints.maxHeight;
-
-                              return GestureDetector(
-                                behavior: HitTestBehavior.opaque,
-                                onScaleStart: _handleScaleStart,
-                                onScaleUpdate: _handleScaleUpdate,
-                                onTapDown: (TapDownDetails details) =>
-                                    onViewFinderTap(details, constraints),
-                              );
-                            })),
-                          ),
+                            return GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onScaleStart: _handleScaleStart,
+                              onScaleUpdate: _handleScaleUpdate,
+                              onTapDown: (TapDownDetails details) =>
+                                  onViewFinderTap(details, constraints),
+                            );
+                          })),
                         ),
                       ),
                     ),
@@ -245,20 +196,57 @@ class ScalableOCRState extends State<ScalableOCR> {
                 ),
               ),
             ),
-            if (customPaint != null)
-              LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                maxWidth = constraints.maxWidth;
-                maxHeight = constraints.maxHeight;
-                return GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onScaleStart: _handleScaleStart,
-                  onScaleUpdate: _handleScaleUpdate,
-                  onTapDown: (TapDownDetails details) =>
-                      onViewFinderTap(details, constraints),
-                  child: customPaint!,
-                );
-              }),
+            Positioned.fill(
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onPanStart: (DragStartDetails details) {
+                  draggedEdge =
+                      detectResizeEdge(details.localPosition, boxRect.value);
+                },
+                onPanUpdate: (DragUpdateDetails details) {
+                  double dx = details.delta.dx;
+                  double dy = details.delta.dy;
+
+                  if (draggedEdge == ResizeEdge.none) {
+                    setState(() {
+                      boxRect.value = Rect.fromLTRB(
+                        boxRect.value.left + dx,
+                        boxRect.value.top + dy,
+                        boxRect.value.right + dx,
+                        boxRect.value.bottom + dy,
+                      );
+                    });
+                  } else {
+                    setState(() {
+                      switch (draggedEdge) {
+                        case ResizeEdge.left:
+                          boxRect.value = boxRect.value
+                              .shift(Offset(dx, 0))
+                              .deflate(dx / 2);
+                          break;
+                        case ResizeEdge.top:
+                          boxRect.value = boxRect.value
+                              .shift(Offset(0, dy))
+                              .deflate(dy / 2);
+                          break;
+                        case ResizeEdge.right:
+                          boxRect.value = boxRect.value.inflate(dx / 2);
+                          break;
+                        case ResizeEdge.bottom:
+                          boxRect.value = boxRect.value.inflate(dy / 2);
+                          break;
+                        default:
+                          break;
+                      }
+                    });
+                  }
+                },
+                onPanEnd: (DragEndDetails details) {
+                  draggedEdge = ResizeEdge.none;
+                },
+                child: customPaint != null ? customPaint : SizedBox.shrink(),
+              ),
+            ),
           ],
         ),
       );
