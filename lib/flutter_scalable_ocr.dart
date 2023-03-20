@@ -89,7 +89,7 @@ class ScalableOCRState extends State<ScalableOCR> {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     double boxWidth = screenWidth * 0.6;
-    double boxHeight = screenHeight * 0.6;
+    double boxHeight = screenHeight * 0.2;
 
     if (boxRect.value == Rect.zero) {
       boxRect.value = Rect.fromLTWH(
