@@ -9,7 +9,7 @@ import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart
 import 'package:camera/camera.dart';
 
 class ScalableOCR extends StatefulWidget {
-  const ScalableOCR(
+  ScalableOCR(
       {Key? key,
       this.boxLeftOff = 4,
       this.boxRightOff = 4,
@@ -50,6 +50,7 @@ class ScalableOCR extends StatefulWidget {
 }
 
 class ScalableOCRState extends State<ScalableOCR> {
+  final boxRect = ValueNotifier<Rect>(Rect.zero);
   final TextRecognizer _textRecognizer = TextRecognizer();
   final cameraPrev = GlobalKey();
   final thePainter = GlobalKey();
@@ -124,8 +125,7 @@ class ScalableOCRState extends State<ScalableOCR> {
           children: <Widget>[
             Center(
               child: SizedBox(
-                height:
-                    MediaQuery.of(context).size.height,
+                height: MediaQuery.of(context).size.height,
                 key: cameraPrev,
                 child: AspectRatio(
                   aspectRatio: 1,
@@ -137,20 +137,35 @@ class ScalableOCRState extends State<ScalableOCR> {
                       child: Transform.scale(
                         scale: 1,
                         child: Center(
-                          child: CameraPreview(cameraController, child:
-                              LayoutBuilder(builder: (BuildContext context,
-                                  BoxConstraints constraints) {
-                            maxWidth = constraints.maxWidth;
-                            maxHeight = constraints.maxHeight;
+                          child: GestureDetector(
+                            onPanUpdate: (details) {
+                              double dx = details.delta.dx;
+                              double dy = details.delta.dy;
 
-                            return GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onScaleStart: _handleScaleStart,
-                              onScaleUpdate: _handleScaleUpdate,
-                              onTapDown: (TapDownDetails details) =>
-                                  onViewFinderTap(details, constraints),
-                            );
-                          })),
+                              setState(() {
+                                boxRect.value = Rect.fromLTRB(
+                                  boxRect.value.left + dx,
+                                  boxRect.value.top + dy,
+                                  boxRect.value.right + dx,
+                                  boxRect.value.bottom + dy,
+                                );
+                              });
+                            },
+                            child: CameraPreview(cameraController, child:
+                                LayoutBuilder(builder: (BuildContext context,
+                                    BoxConstraints constraints) {
+                              maxWidth = constraints.maxWidth;
+                              maxHeight = constraints.maxHeight;
+
+                              return GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onScaleStart: _handleScaleStart,
+                                onScaleUpdate: _handleScaleUpdate,
+                                onTapDown: (TapDownDetails details) =>
+                                    onViewFinderTap(details, constraints),
+                              );
+                            })),
+                          ),
                         ),
                       ),
                     ),
@@ -299,7 +314,7 @@ class ScalableOCRState extends State<ScalableOCR> {
     _controller = null;
   }
 
- // Process image
+  // Process image
   Future<void> processImage(InputImage inputImage) async {
     if (!_canProcess) return;
     if (_isBusy) return;
@@ -316,13 +331,16 @@ class ScalableOCRState extends State<ScalableOCR> {
           recognizedText,
           inputImage.inputImageData!.size,
           inputImage.inputImageData!.imageRotation,
-          renderBox, (value) {
-        widget.getScannedText(value);
-      }, getRawData: (value) {
-        if (widget.getRawData != null) {
-          widget.getRawData!(value);
-        }
-      },
+          renderBox,
+          (value) {
+            widget.getScannedText(value);
+          },
+          boxRect,
+          getRawData: (value) {
+            if (widget.getRawData != null) {
+              widget.getRawData!(value);
+            }
+          },
           boxBottomOff: widget.boxBottomOff,
           boxTopOff: widget.boxTopOff,
           boxRightOff: widget.boxRightOff,

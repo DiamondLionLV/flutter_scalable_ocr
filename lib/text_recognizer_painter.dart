@@ -8,13 +8,15 @@ import 'coordinates_translator.dart';
 
 class TextRecognizerPainter extends CustomPainter {
   TextRecognizerPainter(this.recognizedText, this.absoluteImageSize,
-      this.rotation, this.renderBox, this.getScannedText,
+      this.rotation, this.renderBox, this.getScannedText, this.boxRect,
       {this.boxLeftOff = 4,
       this.boxBottomOff = 1.7,
       this.boxRightOff = 4,
       this.boxTopOff = 1.7,
       this.getRawData,
       this.paintboxCustom});
+
+  final ValueNotifier<Rect> boxRect;
 
   /// ML kit recognizer
   final RecognizedText recognizedText;
@@ -98,7 +100,8 @@ class TextRecognizerPainter extends CustomPainter {
       ..strokeWidth = 3.0
       ..color = const Color(0xffaa1578);
     canvas.drawRect(
-      Rect.fromLTRB(boxLeft, boxTop, boxRight, boxBottom),
+      //Rect.fromLTRB(boxLeft, boxTop, boxRight, boxBottom),
+      boxRect.value,
       paintbox,
     );
     List textBlocks = [];
