@@ -50,7 +50,7 @@ class ScalableOCR extends StatefulWidget {
 }
 
 class ScalableOCRState extends State<ScalableOCR> {
-  final boxRect = ValueNotifier<Rect>(Rect.fromLTWH(50, 50, 150, 100));
+  final boxRect = ValueNotifier<Rect>(Rect.zero);
   final TextRecognizer _textRecognizer = TextRecognizer();
   final cameraPrev = GlobalKey();
   final thePainter = GlobalKey();
@@ -86,6 +86,20 @@ class ScalableOCRState extends State<ScalableOCR> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    double boxWidth = screenWidth * 0.6;
+    double boxHeight = screenHeight * 0.3;
+
+    if (boxRect.value == Rect.zero) {
+      boxRect.value = Rect.fromLTWH(
+        (screenWidth - boxWidth) / 2,
+        (screenHeight - boxHeight) / 2,
+        boxWidth,
+        boxHeight,
+      );
+    }
+
     double sizeH = MediaQuery.of(context).size.height;
     return Padding(
         padding: EdgeInsets.all(0),
