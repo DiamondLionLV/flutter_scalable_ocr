@@ -206,7 +206,6 @@ class ScalableOCRState extends State<ScalableOCR> {
                 onPanUpdate: (DragUpdateDetails details) {
                   double dx = details.delta.dx;
                   double dy = details.delta.dy;
-
                   if (draggedEdge == ResizeEdge.none) {
                     setState(() {
                       boxRect.value = Rect.fromLTRB(
@@ -220,20 +219,36 @@ class ScalableOCRState extends State<ScalableOCR> {
                     setState(() {
                       switch (draggedEdge) {
                         case ResizeEdge.left:
-                          boxRect.value = boxRect.value
-                              .shift(Offset(dx, 0))
-                              .deflate(dx / 2);
+                          boxRect.value = Rect.fromLTRB(
+                            boxRect.value.left + dx,
+                            boxRect.value.top,
+                            boxRect.value.right,
+                            boxRect.value.bottom,
+                          );
                           break;
                         case ResizeEdge.top:
-                          boxRect.value = boxRect.value
-                              .shift(Offset(0, dy))
-                              .deflate(dy / 2);
+                          boxRect.value = Rect.fromLTRB(
+                            boxRect.value.left,
+                            boxRect.value.top + dy,
+                            boxRect.value.right,
+                            boxRect.value.bottom,
+                          );
                           break;
                         case ResizeEdge.right:
-                          boxRect.value = boxRect.value.inflate(dx / 2);
+                          boxRect.value = Rect.fromLTRB(
+                            boxRect.value.left,
+                            boxRect.value.top,
+                            boxRect.value.right + dx,
+                            boxRect.value.bottom,
+                          );
                           break;
                         case ResizeEdge.bottom:
-                          boxRect.value = boxRect.value.inflate(dy / 2);
+                          boxRect.value = Rect.fromLTRB(
+                            boxRect.value.left,
+                            boxRect.value.top,
+                            boxRect.value.right,
+                            boxRect.value.bottom + dy,
+                          );
                           break;
                         default:
                           break;
