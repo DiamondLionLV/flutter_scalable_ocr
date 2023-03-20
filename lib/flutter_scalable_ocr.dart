@@ -50,7 +50,7 @@ class ScalableOCR extends StatefulWidget {
 }
 
 class ScalableOCRState extends State<ScalableOCR> {
-  final boxRect = ValueNotifier<Rect>(Rect.zero);
+  final boxRect = ValueNotifier<Rect>(Rect.fromLTWH(50, 50, 150, 100));
   final TextRecognizer _textRecognizer = TextRecognizer();
   final cameraPrev = GlobalKey();
   final thePainter = GlobalKey();
