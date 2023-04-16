@@ -9,7 +9,7 @@ import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart
 import 'package:camera/camera.dart';
 
 class ScalableOCR extends StatefulWidget {
-  ScalableOCR(
+  const ScalableOCR(
       {Key? key,
       this.boxLeftOff = 4,
       this.boxRightOff = 4,
@@ -49,10 +49,7 @@ class ScalableOCR extends StatefulWidget {
   ScalableOCRState createState() => ScalableOCRState();
 }
 
-enum ResizeEdge { none, left, top, right, bottom }
-
 class ScalableOCRState extends State<ScalableOCR> {
-  final boxRect = ValueNotifier<Rect>(Rect.zero);
   final TextRecognizer _textRecognizer = TextRecognizer();
   final cameraPrev = GlobalKey();
   final thePainter = GlobalKey();
@@ -74,28 +71,6 @@ class ScalableOCRState extends State<ScalableOCR> {
   double maxHeight = 0;
   String convertingAmount = "";
 
-  ResizeEdge detectResizeEdge(Offset localPosition, Rect box) {
-    const double edgeSize = 20.0;
-
-    if (localPosition.dx >= box.left - edgeSize &&
-        localPosition.dx <= box.left + edgeSize) {
-      return ResizeEdge.left;
-    } else if (localPosition.dy >= box.top - edgeSize &&
-        localPosition.dy <= box.top + edgeSize) {
-      return ResizeEdge.top;
-    } else if (localPosition.dx >= box.right - edgeSize &&
-        localPosition.dx <= box.right + edgeSize) {
-      return ResizeEdge.right;
-    } else if (localPosition.dy >= box.bottom - edgeSize &&
-        localPosition.dy <= box.bottom + edgeSize) {
-      return ResizeEdge.bottom;
-    }
-
-    return ResizeEdge.none;
-  }
-
-  ResizeEdge draggedEdge = ResizeEdge.none;
-
   @override
   void initState() {
     super.initState();
@@ -110,20 +85,6 @@ class ScalableOCRState extends State<ScalableOCR> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
-    double boxWidth = screenWidth * 0.6;
-    double boxHeight = screenHeight * 0.1;
-
-    if (boxRect.value == Rect.zero) {
-      boxRect.value = Rect.fromLTWH(
-        (screenWidth - boxWidth) / 2,
-        (screenHeight - boxHeight) / 2,
-        boxWidth,
-        boxHeight,
-      );
-    }
-
     double sizeH = MediaQuery.of(context).size.height;
     return Padding(
         padding: EdgeInsets.all(0),
@@ -153,7 +114,6 @@ class ScalableOCRState extends State<ScalableOCR> {
     if (cameraController == null || !cameraController.value.isInitialized) {
       return const Text('Tap a camera');
     } else {
-      const double previewAspectRatio = 0.5;
       return SizedBox(
         height: MediaQuery.of(context).size.height,
         child: Stack(
@@ -196,73 +156,20 @@ class ScalableOCRState extends State<ScalableOCR> {
                 ),
               ),
             ),
-            Positioned.fill(
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onPanStart: (DragStartDetails details) {
-                  draggedEdge =
-                      detectResizeEdge(details.localPosition, boxRect.value);
-                  print("draggedEdge: $draggedEdge");
-                },
-                onPanUpdate: (DragUpdateDetails details) {
-                  double dx = details.delta.dx;
-                  double dy = details.delta.dy;
-                  if (draggedEdge == ResizeEdge.none) {
-                    setState(() {
-                      boxRect.value = Rect.fromLTRB(
-                        boxRect.value.left + dx,
-                        boxRect.value.top + dy,
-                        boxRect.value.right + dx,
-                        boxRect.value.bottom + dy,
-                      );
-                    });
-                  } else {
-                    setState(() {
-                      switch (draggedEdge) {
-                        case ResizeEdge.left:
-                          boxRect.value = Rect.fromLTRB(
-                            boxRect.value.left + dx,
-                            boxRect.value.top,
-                            boxRect.value.right,
-                            boxRect.value.bottom,
-                          );
-                          break;
-                        case ResizeEdge.top:
-                          boxRect.value = Rect.fromLTRB(
-                            boxRect.value.left,
-                            boxRect.value.top + dy,
-                            boxRect.value.right,
-                            boxRect.value.bottom,
-                          );
-                          break;
-                        case ResizeEdge.right:
-                          boxRect.value = Rect.fromLTRB(
-                            boxRect.value.left,
-                            boxRect.value.top,
-                            boxRect.value.right + dx,
-                            boxRect.value.bottom,
-                          );
-                          break;
-                        case ResizeEdge.bottom:
-                          boxRect.value = Rect.fromLTRB(
-                            boxRect.value.left,
-                            boxRect.value.top,
-                            boxRect.value.right,
-                            boxRect.value.bottom + dy,
-                          );
-                          break;
-                        default:
-                          break;
-                      }
-                    });
-                  }
-                },
-                onPanEnd: (DragEndDetails details) {
-                  draggedEdge = ResizeEdge.none;
-                },
-                child: customPaint != null ? customPaint : SizedBox.shrink(),
-              ),
-            ),
+            if (customPaint != null)
+              LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                maxWidth = constraints.maxWidth;
+                maxHeight = constraints.maxHeight;
+                return GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onScaleStart: _handleScaleStart,
+                  onScaleUpdate: _handleScaleUpdate,
+                  onTapDown: (TapDownDetails details) =>
+                      onViewFinderTap(details, constraints),
+                  child: customPaint!,
+                );
+              }),
           ],
         ),
       );
@@ -407,16 +314,13 @@ class ScalableOCRState extends State<ScalableOCR> {
           recognizedText,
           inputImage.inputImageData!.size,
           inputImage.inputImageData!.imageRotation,
-          renderBox,
-          (value) {
-            widget.getScannedText(value);
-          },
-          boxRect,
-          getRawData: (value) {
-            if (widget.getRawData != null) {
-              widget.getRawData!(value);
-            }
-          },
+          renderBox, (value) {
+        widget.getScannedText(value);
+      }, getRawData: (value) {
+        if (widget.getRawData != null) {
+          widget.getRawData!(value);
+        }
+      },
           boxBottomOff: widget.boxBottomOff,
           boxTopOff: widget.boxTopOff,
           boxRightOff: widget.boxRightOff,

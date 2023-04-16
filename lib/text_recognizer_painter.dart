@@ -5,15 +5,13 @@ import 'coordinates_translator.dart';
 
 class TextRecognizerPainter extends CustomPainter {
   TextRecognizerPainter(this.recognizedText, this.absoluteImageSize,
-      this.rotation, this.renderBox, this.getScannedText, this.boxRect,
+      this.rotation, this.renderBox, this.getScannedText,
       {this.boxLeftOff = 4,
       this.boxBottomOff = 1.7,
       this.boxRightOff = 4,
       this.boxTopOff = 1.7,
       this.getRawData,
       this.paintboxCustom});
-
-  final ValueNotifier<Rect> boxRect;
 
   /// ML kit recognizer
   final RecognizedText recognizedText;
@@ -94,11 +92,10 @@ class TextRecognizerPainter extends CustomPainter {
 
     final Paint paintbox = paintboxCustom ?? Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 3.0
+      ..strokeWidth = 4.0
       ..color = const Color(0xffaa1578);
     canvas.drawRect(
-      //Rect.fromLTRB(boxLeft, boxTop, boxRight, boxBottom),
-      boxRect.value,
+      Rect.fromLTRB(boxLeft, boxTop, boxRight, boxBottom),
       paintbox,
     );
     List textBlocks = [];
@@ -117,8 +114,26 @@ class TextRecognizerPainter extends CustomPainter {
               (top >= (boxTop + 15) && top <= (boxBottom - 20))) {
             textBlocks.add(textBlock);
 
-            var parsedText = textBlock.text;
             scannedText += " ${textBlock.text}";
+
+//             final ParagraphBuilder builder = ParagraphBuilder(
+//               ParagraphStyle(
+//                   textAlign: TextAlign.left,
+//                   fontSize: 14,
+//                   textDirection: TextDirection.ltr),
+//             );
+//             builder.pushStyle(
+//                 ui.TextStyle(color: Colors.white, background: background));
+//             builder.addText(parsedText);
+//             builder.pop();
+
+//             canvas.drawParagraph(
+//               builder.build()
+//                 ..layout(ParagraphConstraints(
+//                   width: right - left,
+//                 )),
+//               Offset(left, top),
+//             );
           }
         }
       }
